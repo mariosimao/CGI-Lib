@@ -46,7 +46,7 @@ typedef enum
  * cgiGetFormValueNameNotFound					Did not found form input name.
  */
 cgiError
-cgiGetFormValue (char *name, char* value);
+CgiGetFormValue (char *name, char* value);
 
 /* 02. GET FORM VALUE INTEGER
  *
@@ -66,7 +66,7 @@ cgiGetFormValue (char *name, char* value);
  * cgiGetFormValueIntegerInvalid				Value is not an integer.
  */
 cgiError
-cgiGetFormValueInteger (char *name, int *value);
+CgiGetFormValueInteger (char *name, int *value);
 
 /* 03. GET FORM VALUE DOUBLE
  *
@@ -87,4 +87,4 @@ cgiGetFormValueInteger (char *name, int *value);
  * cgiGetFormValueDoubleInvalid					Value is not a double.
  */
 cgiError
-cgiGetFormValueDouble (char *name, double *value);
+CgiGetFormValueDouble (char *name, double *value);

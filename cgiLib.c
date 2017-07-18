@@ -23,7 +23,7 @@
  * cgiGetFormValueNameNotFound					Did not found form input name.
  */
 cgiError
-cgiGetFormValue (char *name, char* value)
+CgiGetFormValue (char *name, char* value)
 {
 	unsigned long postLength;
 	char getQuery [CGI_QUERY_MAX_LENGTH + 1];
@@ -142,14 +142,14 @@ cgiGetFormValue (char *name, char* value)
  * cgiGetFormValueIntegerInvalid				Value is not an integer.
  */
 cgiError
-cgiGetFormValueInteger (char *name, int *value)
+CgiGetFormValueInteger (char *name, int *value)
 {
 	cgiError result;
 	char stringValue [CGI_INPUT_VALUE_MAX_LENGTH];
 	char *validation;
 
 	/* Get string */
-	result = cgiGetFormValue (name, stringValue);
+	result = CgiGetFormValue (name, stringValue);
 	if (result != cgiOk)
 		return result;
 
@@ -184,7 +184,7 @@ cgiGetFormValueInteger (char *name, int *value)
  * cgiGetFormValueDoubleInvalid					Value is not a double.
  */
 cgiError
-cgiGetFormValueDouble (char *name, double *value)
+CgiGetFormValueDouble (char *name, double *value)
 {
 	cgiError result;
 	char stringValue [CGI_INPUT_VALUE_MAX_LENGTH];
@@ -192,7 +192,7 @@ cgiGetFormValueDouble (char *name, double *value)
 	size_t index;
 
 	/* Get string */
-	result = cgiGetFormValue (name, stringValue);
+	result = CgiGetFormValue (name, stringValue);
 	if (result != cgiOk)
 		return result;
 

@@ -9,7 +9,7 @@ CGI LIBRARY
 	Functions List:
 
 		 cgiError
-		 cgiGetFormValue (char *name, char* value);
+		 CgiGetFormValue (char *name, char* value);
 		|
 		|	01. GET FORM VALUE
 		|
@@ -31,7 +31,7 @@ CGI LIBRARY
 		|	cgiGetFormValueNameNotFound					Did not found form input name.
 
 		 cgiError
-		 cgiGetFormValueInteger (char *name, int *value);
+		 CgiGetFormValueInteger (char *name, int *value);
 		|
 		|	02. GET FORM VALUE INTEGER
 		|
@@ -51,7 +51,7 @@ CGI LIBRARY
 		|	cgiGetFormValueIntegerInvalid				Value is not an integer.
 
 		 cgiError
-		 cgiGetFormValueDouble (char *name, double *value);
+		 CgiGetFormValueDouble (char *name, double *value);
 		|
 		|	03. GET FORM VALUE DOUBLE
 		|

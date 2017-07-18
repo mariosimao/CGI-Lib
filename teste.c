@@ -11,8 +11,8 @@ main (void)
 	char name [1024 + 1];
 	cgiError erro1, erro2;
 
-	erro1 = cgiGetFormValue ("name", name);
-	erro2 = cgiGetFormValueDouble ("age", &age);
+	erro1 = CgiGetFormValue ("name", name);
+	erro2 = CgiGetFormValueDouble ("age", &age);
 
 	printf ("Content-Type: text/html\n\n");
 
