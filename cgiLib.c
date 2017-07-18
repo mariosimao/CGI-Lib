@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* GET FORM STRING
+/* 01. GET FORM VALUE
  *
  * Description:
  * Gets a value from a given form input.
@@ -17,12 +17,13 @@
  *
  * Return:
  * cgiOk										Success!
- * cgiGetFormStringGetPostNull					Did not received any form query data.
- * cgiGetFormStringQueryInvalidFormat			Query in invalid format.
- * cgiGetFormStringNameNotFound					Did not found form input name.
+ * cgiGetFormValueGetPostNull					Did not received any form query data.
+ * cgiGetFormValueQueryInvalidFormat			Query in invalid format.
+ * cgiGetFormValueEmpty							Input value is empty.
+ * cgiGetFormValueNameNotFound					Did not found form input name.
  */
 cgiError
-cgiGetFormString (char *name, char* value)
+cgiGetFormValue (char *name, char* value)
 {
 	unsigned long postLength;
 	char getQuery [CGI_QUERY_MAX_LENGTH + 1];
@@ -53,7 +54,7 @@ cgiGetFormString (char *name, char* value)
 
 	/* Post and Get queries are NULL */
 	if ((strlen (getQuery) == 0) && (strlen (postQuery) == 0))
-		return cgiGetFormStringGetPostNull;
+		return cgiGetFormValueGetPostNull;
 	/* Get query */
 	else if (strlen (getQuery) > 0)
 		strcpy (query, getQuery);
@@ -94,8 +95,8 @@ cgiGetFormString (char *name, char* value)
 				/* Convertion */
 				dataValue [dataIndex] = (char) strtol (hexString, &hexValidation, 16);
 				/* Convertion failed */
-				if (hexValidation == '\0')
-					return cgiGetFormStringQueryInvalidFormat;
+				if (*hexValidation != '\0')
+					return cgiGetFormValueQueryInvalidFormat;
 				queryIndex += 2;
 			}
 			else
@@ -113,10 +114,105 @@ cgiGetFormString (char *name, char* value)
 		if (strcmp (dataName, name) == 0)
 		{
 			strcpy (value, dataValue);
+			if (strlen (value) == 0)
+				return cgiGetFormValueEmpty;
 			return cgiOk;
 		}
 	}
 
 	/* If reached this point, did not found the data name */
-	return cgiGetFormStringNameNotFound;
+	return cgiGetFormValueNameNotFound;
+}
+
+/* 02. GET FORM VALUE INTEGER
+ *
+ * Description:
+ * Gets a doulbe value from a given form input.
+ * Suports GET and POST methods.
+ * Converts '+' to spaces.
+ * Converts hex (e.g. E1) to string.
+ *
+ * Arguments:
+ * char * - input name (same as in HTML form) [I]
+ * int *  - integer value [O]
+ *
+ * Return:
+ * cgiOk										Success!
+ * cgiGetFormValue errors						All errons in "cgiGetFormValue" function.
+ * cgiGetFormValueIntegerInvalid				Value is not an integer.
+ */
+cgiError
+cgiGetFormValueInteger (char *name, int *value)
+{
+	cgiError result;
+	char stringValue [CGI_INPUT_VALUE_MAX_LENGTH];
+	char *validation;
+
+	/* Get string */
+	result = cgiGetFormValue (name, stringValue);
+	if (result != cgiOk)
+		return result;
+
+	/* Converts to double */
+	*value = (int) strtol (stringValue, &validation, 10);
+	if (*validation != '\0')
+	{
+		value = NULL;
+		return cgiGetFormValueIntegerInvalid;
+	}
+
+	/* Success! */
+	return cgiOk;
+}
+
+/* 03. GET FORM VALUE DOUBLE
+ *
+ * Description:
+ * Gets an integer value from a given form input.
+ * Suports GET and POST methods.
+ * Converts '+' to spaces.
+ * Converts hex (e.g. E1) to string.
+ * Converts ',' to '.'.
+ *
+ * Arguments:
+ * char *    - input name (same as in HTML form) [I]
+ * double *  - double value [O]
+ *
+ * Return:
+ * cgiOk										Success!
+ * cgiGetFormValue errors						All errons in "cgiGetFormValue" function.
+ * cgiGetFormValueDoubleInvalid					Value is not a double.
+ */
+cgiError
+cgiGetFormValueDouble (char *name, double *value)
+{
+	cgiError result;
+	char stringValue [CGI_INPUT_VALUE_MAX_LENGTH];
+	char *validation;
+	size_t index;
+
+	/* Get string */
+	result = cgiGetFormValue (name, stringValue);
+	if (result != cgiOk)
+		return result;
+
+	/* Tranform ',' in '.' */
+	index = 0;
+	while (stringValue [index] != '\0')
+	{
+		if (stringValue [index] == ',')
+			stringValue [index] = '.';
+		index++;
+	}
+
+	/* Converts to double */
+	*value = (double) strtod (stringValue, &validation);
+	if (*validation != '\0')
+	{
+		value = NULL;
+		return cgiGetFormValueDoubleInvalid;
+	}
+
+	/* Success! */
+	return cgiOk;
 }

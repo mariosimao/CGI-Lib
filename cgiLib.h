@@ -17,13 +17,16 @@
 typedef enum
 {
 	cgiOk,
-	cgiGetFormStringGetPostNull,
-	cgiGetFormStringQueryInvalidFormat,
-	cgiGetFormStringNameNotFound,
+	cgiGetFormValueGetPostNull,
+	cgiGetFormValueQueryInvalidFormat,
+	cgiGetFormValueEmpty,
+	cgiGetFormValueNameNotFound,
+	cgiGetFormValueIntegerInvalid,
+	cgiGetFormValueDoubleInvalid,
 } cgiError;
 
 
-/* GET FORM STRING
+/* 01. GET FORM VALUE
  *
  * Description:
  * Gets a value from a given form input.
@@ -37,9 +40,51 @@ typedef enum
  *
  * Return:
  * cgiOk										Success!
- * cgiGetFormStringGetPostNull					Did not received any form query data.
- * cgiGetFormStringQueryInvalidFormat			Query in invalid format.
- * cgiGetFormStringNameNotFound					Did not found form input name.
+ * cgiGetFormValueGetPostNull					Did not received any form query data.
+ * cgiGetFormValueQueryInvalidFormat			Query in invalid format.
+ * cgiGetFormValueEmpty							Input value is empty.
+ * cgiGetFormValueNameNotFound					Did not found form input name.
  */
 cgiError
-cgiGetFormString (char *name, char* value);
+cgiGetFormValue (char *name, char* value);
+
+/* 02. GET FORM VALUE INTEGER
+ *
+ * Description:
+ * Gets a doulbe value from a given form input.
+ * Suports GET and POST methods.
+ * Converts '+' to spaces.
+ * Converts hex (e.g. E1) to string.
+ *
+ * Arguments:
+ * char * - input name (same as in HTML form) [I]
+ * int *  - integer value [O]
+ *
+ * Return:
+ * cgiOk										Success!
+ * cgiGetFormValue errors						All errons in "cgiGetFormValue" function.
+ * cgiGetFormValueIntegerInvalid				Value is not an integer.
+ */
+cgiError
+cgiGetFormValueInteger (char *name, int *value);
+
+/* 03. GET FORM VALUE DOUBLE
+ *
+ * Description:
+ * Gets an integer value from a given form input.
+ * Suports GET and POST methods.
+ * Converts '+' to spaces.
+ * Converts hex (e.g. E1) to string.
+ * Converts ',' to '.'.
+ *
+ * Arguments:
+ * char *    - input name (same as in HTML form) [I]
+ * double *  - double value [O]
+ *
+ * Return:
+ * cgiOk										Success!
+ * cgiGetFormValue errors						All errons in "cgiGetFormValue" function.
+ * cgiGetFormValueDoubleInvalid					Value is not a double.
+ */
+cgiError
+cgiGetFormValueDouble (char *name, double *value);
