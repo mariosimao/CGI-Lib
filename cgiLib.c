@@ -17,7 +17,7 @@
  *
  * Return:
  * cgiOk										Success!
- * cgiGetFormValueGetPostNull					Did not received any form query data.
+ * cgiGetFormValueInvalidMethod					Did not received any form query data.
  * cgiGetFormValueQueryInvalidFormat			Query in invalid format.
  * cgiGetFormValueEmpty							Input value is empty.
  * cgiGetFormValueNameNotFound					Did not found form input name.
@@ -25,9 +25,11 @@
 cgiError
 CgiGetFormValue (char *name, char* value)
 {
-	unsigned long postLength;
-	char getQuery [CGI_QUERY_MAX_LENGTH + 1];
-	char postQuery [CGI_QUERY_MAX_LENGTH + 1];
+	/* tempQuery and counter NEED the "static" prefix.
+	 * Both variables store information from previous
+	 * calls of the function. */
+	static char tempQuery [CGI_QUERY_MAX_LENGTH + 1];
+	static unsigned short counter = 0;
 	char query [CGI_QUERY_MAX_LENGTH + 1];
 	char dataName [CGI_INPUT_NAME_MAX_LENGTH + 1];
 	char dataValue [CGI_INPUT_VALUE_MAX_LENGTH + 1];
@@ -42,25 +44,29 @@ CgiGetFormValue (char *name, char* value)
 	 * Special characters in HEX format (e.g. %A3)
 	 */
 
-	/* Get GET Query */
-	strcpy (getQuery, getenv ("QUERY_STRING"));
-
-	/* Get POST Query */
-	if (getenv ("CONTENT_LENGTH"))
+	/* Gets GET query */
+	if (strcmp (getenv ("REQUEST_METHOD"), "GET") == 0)
 	{
-		postLength = strtol (getenv ("CONTENT_LENGTH"), NULL, 10);
-		fgets (postQuery, postLength + 1, stdin);
+		if (counter == 0)
+		{
+			strcpy (tempQuery, getenv ("QUERY_STRING"));
+			counter++;
+		}
 	}
-
-	/* Post and Get queries are NULL */
-	if ((strlen (getQuery) == 0) && (strlen (postQuery) == 0))
-		return cgiGetFormValueGetPostNull;
-	/* Get query */
-	else if (strlen (getQuery) > 0)
-		strcpy (query, getQuery);
-	/* Post query */
+	/* Gets POST query */
+	else if (strcmp (getenv ("REQUEST_METHOD"), "POST") == 0)
+	{
+		if (counter == 0)
+		{
+			fgets (tempQuery, CGI_QUERY_MAX_LENGTH + 1, stdin);
+			counter++;
+		}
+	}
+	/* Invalid method */
 	else
-		strcpy (query, postQuery);
+		return cgiGetFormValueInvalidMethod;
+
+	strcpy (query, tempQuery);
 
 	/* Search data name */
 	queryIndex = 0;
@@ -151,7 +157,10 @@ CgiGetFormValueInteger (char *name, int *value)
 	/* Get string */
 	result = CgiGetFormValue (name, stringValue);
 	if (result != cgiOk)
+	{
+		value = NULL;
 		return result;
+	}
 
 	/* Converts to double */
 	*value = (int) strtol (stringValue, &validation, 10);
@@ -194,7 +203,10 @@ CgiGetFormValueDouble (char *name, double *value)
 	/* Get string */
 	result = CgiGetFormValue (name, stringValue);
 	if (result != cgiOk)
+	{
+		value = NULL;
 		return result;
+	}
 
 	/* Tranform ',' in '.' */
 	index = 0;
@@ -214,5 +226,88 @@ CgiGetFormValueDouble (char *name, double *value)
 	}
 
 	/* Success! */
+	return cgiOk;
+}
+
+/* 04. BEGIN HTTP HEADER
+ *
+ * Description:
+ * Begins HTTP header with content type set as "text/html"
+ *
+ * No arguments.
+ *
+ * Return:
+ * cgiOk										Success!
+ */
+cgiError
+CgiBeginHttpHeader (void)
+{
+	printf ("Content-Type: text/html\n");
+	return cgiOk;
+}
+
+/* 05. END HTTP HEADER
+ *
+ * Description:
+ * Ends HTTP header with content type set as "text/html"
+ *
+ * No arguments.
+ *
+ * Return:
+ * cgiOk										Success!
+ */
+cgiError
+CgiEndHttpHeader (void)
+{
+	printf ("\n");
+	return cgiOk;
+}
+
+/* 06. SET COOKIE
+ *
+ * Description:
+ * Sets a cookie.
+ * MUST be used between "CgiBeginHttpHeader" and "CgiEndHttpHeader".
+ *
+ * Arguments:
+ * char * - cookie name [I]
+ * char * - cookie value [I]
+ * int *  - cookie maxAge [I]
+ 			(use 0 if you do not want to set)
+ * char * - path [I]
+ 			(use NULL if you do not want to set)
+ *
+ * Return:
+ * cgiOk										Success!
+ * cgiSetCookieNameNull							Cookie name is NULL
+ * cgiSetCookieNameEmpty						Cookie name is empty
+ * cgiSetCookieValueNull						Cookie value is NULL
+ * cgiSetCookieValueEmpty						Cookie value is empty
+ */
+cgiError
+CgiSetCookie (char *name, char *value, int maxAge, char *path)
+{
+	/* Use of name and value is mandatory */
+	if (name == NULL)
+		return cgiSetCookieNameNull;
+	if (strlen (name) == 0)
+		return cgiSetCookieNameEmpty;
+	if (value == NULL)
+		return cgiSetCookieValueNull;
+	if (strlen (value) == 0)
+		return cgiSetCookieValueEmpty;
+
+	printf ("Set-Cookie: %s=\"%s\";", name, value);
+
+	/* Max-Age is optional */
+	if (maxAge != 0)
+		printf ("Max-Age=%d;", maxAge);
+
+	/* Path is optional */
+	if (path != NULL)
+		printf ("Path=\"%s\"", path);
+
+	/* Mandatory line breaker */
+	printf ("\n");
 	return cgiOk;
 }

@@ -13,9 +13,9 @@ LD = gcc
 CFLAGS = -Wall -std=c99 -ansi
 LFLAGS = -Wall -std=c99 -ansi
 
-TESTOBJS = teste.o cgiLib.o
+SIMPLE_FORM_OBJS = simpleForm.o cgiLib.o
 
-EXECS = teste
+EXECS = simpleForm
 
 ALL = $(EXECS)
 
@@ -26,8 +26,8 @@ ALL = $(EXECS)
 # Compiles and link-edits all the code
 all: $(ALL)
 
-teste: $(TESTOBJS)
-	$(LD) $(LFLAGS) -o $@.cgi $(TESTOBJS)
+simpleForm: $(SIMPLE_FORM_OBJS)
+	$(LD) $(LFLAGS) -o $@.cgi $(SIMPLE_FORM_OBJS)
 
 # Removes all objects and executables
 clean:

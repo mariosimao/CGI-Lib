@@ -17,12 +17,17 @@
 typedef enum
 {
 	cgiOk,
-	cgiGetFormValueGetPostNull,
+	cgiGetFormValueInvalidMethod,
 	cgiGetFormValueQueryInvalidFormat,
 	cgiGetFormValueEmpty,
 	cgiGetFormValueNameNotFound,
 	cgiGetFormValueIntegerInvalid,
 	cgiGetFormValueDoubleInvalid,
+	cgiSetCookieNameNull,
+	cgiSetCookieNameEmpty,
+	cgiSetCookieValueNull,
+	cgiSetCookieValueEmpty,
+	cgiGetFormValuePostNull,
 } cgiError;
 
 
@@ -40,7 +45,7 @@ typedef enum
  *
  * Return:
  * cgiOk										Success!
- * cgiGetFormValueGetPostNull					Did not received any form query data.
+ * cgiGetFormValueInvalidMethod					Did not received any form query data.
  * cgiGetFormValueQueryInvalidFormat			Query in invalid format.
  * cgiGetFormValueEmpty							Input value is empty.
  * cgiGetFormValueNameNotFound					Did not found form input name.
@@ -88,3 +93,53 @@ CgiGetFormValueInteger (char *name, int *value);
  */
 cgiError
 CgiGetFormValueDouble (char *name, double *value);
+
+/* 04. BEGIN HTTP HEADER
+ *
+ * Description:
+ * Begins HTTP header with content type set as "text/html"
+ *
+ * No arguments.
+ *
+ * Return:
+ * cgiOk										Success!
+ */
+cgiError
+CgiBeginHttpHeader (void);
+
+/* 05. END HTTP HEADER
+ *
+ * Description:
+ * Ends HTTP header with content type set as "text/html"
+ *
+ * No arguments.
+ *
+ * Return:
+ * cgiOk										Success!
+ */
+cgiError
+CgiEndHttpHeader (void);
+
+/* 06. SET COOKIE
+ *
+ * Description:
+ * Sets a cookie.
+ * MUST be used between "CgiBeginHttpHeader" and "CgiEndHttpHeader".
+ *
+ * Arguments:
+ * char * - cookie name [I]
+ * char * - cookie value [I]
+ * int *  - cookie maxAge [I]
+ 			(use 0 if you do not want to set)
+ * char * - path [I]
+ 			(use NULL if you do not want to set)
+ *
+ * Return:
+ * cgiOk										Success!
+ * cgiSetCookieNameNull							Cookie name is NULL
+ * cgiSetCookieNameEmpty						Cookie name is empty
+ * cgiSetCookieValueNull						Cookie value is NULL
+ * cgiSetCookieValueEmpty						Cookie value is empty
+ */
+cgiError
+CgiSetCookie (char *name, char *value, int maxAge, char *path);
