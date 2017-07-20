@@ -15,10 +15,14 @@ Free CGI Library writen in C<br>Created by Mario Simão</p>
 | Input Value | CGI_INPUT_VALUE_MAX_LENGTH | 128    |
 
 ## Functions List
-- [Get Form Value](#get-form-value)
-- [Get Form Value - Integer](#get-form-value-integer)
+- [Get Form Value](#1-get-form-value)
+- [Get Form Value - Integer](#2-get-form-value---integer)
+- [Get Form Value - Double](#3-get-form-value---double)
+- [Begin HTTP Header](#4-begin-http-header)
+- [End HTTP Header](#5-end-http-header)
+---
 
-#### Get Form Value
+### 1. Get Form Value
 ```C
 cgiErrorCgi
 GetFormValue (char *name, char* value);
@@ -46,7 +50,7 @@ GetFormValue (char *name, char* value);
 
 ---
 
-#### Get Form Value - Integer
+### 2. Get Form Value - Integer
 
 ```C
 cgiError
@@ -71,5 +75,109 @@ CgiGetFormValueInteger (char *name, int *value);
 | cgiOk         | Success!    |
 | CgiGetFormValue errors | All errors in "CgiGetFormValue" |
 | cgiGetFormValueIntegerInvalid | Value is not an integer. |
+
+---
+
+### 3. Get Form Value - Double
+
+```C
+cgiError
+CgiGetFormValueDouble (char *name, double *value);
+```
+
+**Description**
+- Gets a double value from a given form input.  
+- Supports GET and POST methods.
+
+**Arguments**
+
+| #| Type | Description | I / O |
+| - |:----:| ---- |:-----:|
+| **1** | char \* | input name<br>(same as in HTML form)| I |
+| **2** | double \* | double value | O |
+
+**Return**
+
+| Returned code | Information |
+| ------------- | ----------- |
+| cgiOk         | Success!    |
+| CgiGetFormValue errors | All errors in "CgiGetFormValue" |
+| cgiGetFormValueDoubleInvalid | Value is not a double. |
+
+---
+
+### 4. Begin HTTP Header
+
+```C
+cgiError
+CgiBeginHttpHeader (void);
+```
+
+**Description**
+- Begins HTTP header with content type set as "text/html"
+
+**Arguments**
+
+- No arguments.
+
+**Return**
+
+| Returned code | Information |
+| ------------- | ----------- |
+| cgiOk         | Success!    |
+
+---
+
+### 5. End HTTP Header
+
+```C
+cgiError
+CgiEndHttpHeader (void);
+```
+
+**Description**
+- Ends HTTP header.
+
+**Arguments**
+
+- No arguments.
+
+**Return**
+
+| Returned code | Information |
+| ------------- | ----------- |
+| cgiOk         | Success!    |
+
+---
+
+### 6. Set Cookie
+
+```C
+cgiError
+CgiSetCookie (char *name, char *value, int maxAge, char *path);
+```
+
+**Description**
+- Sets a cookie.
+- MUST be used between [*CgiBeginHttpHeader*](#4-begin-http-header) and [*CgiEndHttpHeader*](#5-end-http-header).
+
+**Arguments**
+
+| #| Type | Description | I / O |
+| - |:----:| ---- |:-----:|
+| **1** | char \* | cookie name| I |
+| **2** | char \* | cookie value | I |
+| **3** | int | cookie maxAge<br>(use ***0*** if you don't want to set) | I |
+| **4** | char * | path <br>(use ***NULL*** if you don't want to set)| I |
+
+**Return**
+
+| Returned code | Information |
+| ------------- | ----------- |
+| cgiOk         | Success!    |
+| cgiSetCookieNameNull | Cookie name is *NULL* |
+| cgiSetCookieNameEmpty |Cookie name is empty |
+| cgiSetCookieValueNull | Cookie value is *NULL* |
+| cgiSetCookieValueEmpty | Cookie value is empty |
 
 ---

@@ -35,7 +35,7 @@ typedef enum
  *
  * Description:
  * Gets a value from a given form input.
- * Suports GET and POST methods.
+ * Supports GET and POST methods.
  * Converts '+' to spaces.
  * Converts hex (e.g. E1) to string.
  *
@@ -56,8 +56,8 @@ CgiGetFormValue (char *name, char* value);
 /* 02. GET FORM VALUE INTEGER
  *
  * Description:
- * Gets a doulbe value from a given form input.
- * Suports GET and POST methods.
+ * Gets a integer value from a given form input.
+ * Supports GET and POST methods.
  * Converts '+' to spaces.
  * Converts hex (e.g. E1) to string.
  *
@@ -67,7 +67,7 @@ CgiGetFormValue (char *name, char* value);
  *
  * Return:
  * cgiOk										Success!
- * cgiGetFormValue errors						All errons in "cgiGetFormValue" function.
+ * cgiGetFormValue errors						All erros in "cgiGetFormValue" function.
  * cgiGetFormValueIntegerInvalid				Value is not an integer.
  */
 cgiError
@@ -76,8 +76,8 @@ CgiGetFormValueInteger (char *name, int *value);
 /* 03. GET FORM VALUE DOUBLE
  *
  * Description:
- * Gets an integer value from a given form input.
- * Suports GET and POST methods.
+ * Gets an double value from a given form input.
+ * Supports GET and POST methods.
  * Converts '+' to spaces.
  * Converts hex (e.g. E1) to string.
  * Converts ',' to '.'.
@@ -88,7 +88,7 @@ CgiGetFormValueInteger (char *name, int *value);
  *
  * Return:
  * cgiOk										Success!
- * cgiGetFormValue errors						All errons in "cgiGetFormValue" function.
+ * cgiGetFormValue errors						All erros in "cgiGetFormValue" function.
  * cgiGetFormValueDoubleInvalid					Value is not a double.
  */
 cgiError
@@ -110,7 +110,7 @@ CgiBeginHttpHeader (void);
 /* 05. END HTTP HEADER
  *
  * Description:
- * Ends HTTP header with content type set as "text/html"
+ * Ends HTTP header.
  *
  * No arguments.
  *
