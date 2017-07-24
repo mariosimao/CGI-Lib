@@ -297,7 +297,7 @@ CgiSetCookie (char *name, char *value, int maxAge, char *path)
 	if (strlen (value) == 0)
 		return cgiSetCookieValueEmpty;
 
-	printf ("Set-Cookie: %s=\"%s\";", name, value);
+	printf ("Set-Cookie: %s=%s;", name, value);
 
 	/* Max-Age is optional */
 	if (maxAge != 0)
@@ -305,9 +305,138 @@ CgiSetCookie (char *name, char *value, int maxAge, char *path)
 
 	/* Path is optional */
 	if (path != NULL)
-		printf ("Path=\"%s\"", path);
+		printf ("Path=%s", path);
 
 	/* Mandatory line breaker */
 	printf ("\n");
+	return cgiOk;
+}
+
+/* 07. GET COOKIE
+ *
+ * Description:
+ * Gets a cookie value.
+ * MUST be used between "CgiBeginHttpHeader" and "CgiEndHttpHeader".
+ *
+ * Arguments:
+ * char * - cookie name [I]
+ * char * - cookie value [O]
+ *
+ * Return:
+ * cgiOk										Success!
+ * cgiGetCookieNullName							Cookie name is NULL.
+ * cgiGetCookieNullValue						Cookie value is NULL.
+ * cgiGetCookieNameEmpty						Cookie name is empty.
+ * cgiGetCookieNullCookie						Could not list the cookies.
+ * cgiGetCookieNameNotFound						Cookie name not found.
+ */
+cgiError
+CgiGetCookie (char *name, char* value)
+{
+	char *cookie;
+	size_t cookieIndex, dataIndex;
+	char dataName [CGI_INPUT_NAME_MAX_LENGTH + 1];
+	char dataValue [CGI_INPUT_VALUE_MAX_LENGTH + 1];
+
+	if (name == NULL)
+		return cgiGetCookieNullName;
+
+	if (strlen (name) == 0)
+		return cgiGetCookieNameEmpty;
+
+	if (value == NULL)
+		return cgiGetCookieNullValue;
+
+	cookie = getenv("HTTP_COOKIE");
+	if (cookie == NULL)
+		return cgiGetCookieNullCookie;
+
+	cookieIndex = 0;
+	while (cookie [cookieIndex] != '\0')
+	{
+		dataIndex = 0;
+		/* Get data name */
+		while (cookie [cookieIndex] != '=')
+		{
+			dataName [dataIndex] = cookie [cookieIndex];
+			cookieIndex++;
+			dataIndex++;
+		}
+		dataName [dataIndex] = '\0'; /* Inserts EOS */
+		cookieIndex++; /* Jumps '=' character */
+
+		/* Get data value */
+		dataIndex = 0;
+		while ((cookie [cookieIndex] != ';') && (cookie [cookieIndex] != '\0'))
+		{
+			dataValue [dataIndex] = cookie [cookieIndex];
+			cookieIndex++;
+			dataIndex++;
+		}
+		dataValue [dataIndex] = '\0'; /* Inserts EOS */
+		/* Jumps ';' character.
+		 * Avoids jumping EOS */
+		if (cookie [cookieIndex] == ';')
+			cookieIndex++;
+		if (cookie [cookieIndex] == ' ')
+			cookieIndex++;
+
+		/* Checks if data name corresponds */
+		if (strcmp (dataName, name) == 0)
+		{
+			strcpy (value, dataValue);
+			if (strlen (value) == 0)
+				return cgiGetCookieValueEmpty;
+			return cgiOk;
+		}
+
+	}
+
+	/* If reached this point, did not found the data name */
+	return cgiGetCookieNameNotFound;
+}
+
+/* 08. DELETE COOKIE
+ *
+ * Description:
+ * Deletes a cookie by setting the value to zero and
+ * the expiration time to 01/01/1970.
+ * To delete the right cookie, the path must be the
+ * same as the path from the cookie you want delete.
+ * Otherwise, it will only create a new cookie, with
+ * the same name, but other path, value=0 and expiration
+ * time set to 01/01/1970.
+ * MUST be used between "CgiBeginHttpHeader" and "CgiEndHttpHeader".
+ *
+ * Arguments:
+ * char * - cookie name [I]
+ * char * - cookie path [I]
+ *
+ * Return:
+ * cgiOk										Success!
+ * cgiDeleteCookieNameNull						Cookie name is NULL.
+ * cgiDeleteCookieNameEmpty						Cookie name is empty.
+ */
+cgiError
+CgiDeleteCookie (char *name, char *path)
+{
+	/* Use of name is mandatory */
+	if (name == NULL)
+		return cgiDeleteCookieNameNull;
+	if (strlen (name) == 0)
+		return cgiDeleteCookieNameEmpty;
+
+	/* To delete a cookie,
+	 * Sets its value to zero,
+	 * and its expeiration time
+	 * to 01/01/1970 */
+	printf ("Set-Cookie: %s=0; expires=Thu, 01 Jan 1970 00:00:00 GMT;", name);
+
+	if (path != NULL)
+		if (strlen (path) != 0)
+			printf ("Path=%s", path);
+
+	printf ("\n");
+
 	return cgiOk;
 }

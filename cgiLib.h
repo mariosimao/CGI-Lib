@@ -28,6 +28,14 @@ typedef enum
 	cgiSetCookieValueNull,
 	cgiSetCookieValueEmpty,
 	cgiGetFormValuePostNull,
+	cgiGetCookieNullName,
+	cgiGetCookieNameEmpty,
+	cgiGetCookieNullValue,
+	cgiGetCookieNullCookie,
+	cgiGetCookieValueEmpty,
+	cgiGetCookieNameNotFound,
+	cgiDeleteCookieNameNull,
+	cgiDeleteCookieNameEmpty,
 } cgiError;
 
 
@@ -143,3 +151,48 @@ CgiEndHttpHeader (void);
  */
 cgiError
 CgiSetCookie (char *name, char *value, int maxAge, char *path);
+
+/* 07. GET COOKIE
+ *
+ * Description:
+ * Gets a cookie value.
+ * MUST be used between "CgiBeginHttpHeader" and "CgiEndHttpHeader".
+ *
+ * Arguments:
+ * char * - cookie name [I]
+ * char * - cookie value [O]
+ *
+ * Return:
+ * cgiOk										Success!
+ * cgiGetCookieNullName							Cookie name is NULL.
+ * cgiGetCookieNullValue						Cookie value is NULL.
+ * cgiGetCookieNameEmpty						Cookie name is empty.
+ * cgiGetCookieNullCookie						Could not list the cookies.
+ * cgiGetCookieNameNotFound						Cookie name not found.
+ */
+cgiError
+CgiGetCookie (char *name, char* value);
+
+/* 08. DELETE COOKIE
+ *
+ * Description:
+ * Deletes a cookie by setting the value to zero and
+ * the expiration time to 01/01/1970.
+ * To delete the right cookie, the path must be the
+ * same as the path from the cookie you want delete.
+ * Otherwise, it will only create a new cookie, with
+ * the same name, but other path, value=0 and expiration
+ * time set to 01/01/1970.
+ * MUST be used between "CgiBeginHttpHeader" and "CgiEndHttpHeader".
+ *
+ * Arguments:
+ * char * - cookie name [I]
+ * char * - cookie path [I]
+ *
+ * Return:
+ * cgiOk										Success!
+ * cgiDeleteCookieNameNull						Cookie name is NULL.
+ * cgiDeleteCookieNameEmpty						Cookie name is empty.
+ */
+cgiError
+CgiDeleteCookie (char *name, char* path);

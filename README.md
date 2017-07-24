@@ -20,6 +20,10 @@ Free CGI Library writen in C<br>Created by Mario Simão</p>
 - [Get Form Value - Double](#3-get-form-value---double)
 - [Begin HTTP Header](#4-begin-http-header)
 - [End HTTP Header](#5-end-http-header)
+- [Set Cookie](#6-set-cookie)
+- [Get Cookie](#7-get-cookie)
+- [Delete Cookie](#8-delete-cookie)
+
 ---
 
 ### 1. Get Form Value
@@ -159,7 +163,7 @@ CgiSetCookie (char *name, char *value, int maxAge, char *path);
 
 **Description**
 - Sets a cookie.
-- MUST be used between [*CgiBeginHttpHeader*](#4-begin-http-header) and [*CgiEndHttpHeader*](#5-end-http-header).
+- **Must** be used between [*CgiBeginHttpHeader*](#4-begin-http-header) and [*CgiEndHttpHeader*](#5-end-http-header).
 
 **Arguments**
 
@@ -179,5 +183,64 @@ CgiSetCookie (char *name, char *value, int maxAge, char *path);
 | cgiSetCookieNameEmpty |Cookie name is empty |
 | cgiSetCookieValueNull | Cookie value is *NULL* |
 | cgiSetCookieValueEmpty | Cookie value is empty |
+
+---
+
+### 7. Get Cookie
+
+```C
+cgiError
+CgiGetCookie (char *name, char* value);
+```
+
+**Description**
+- Gets a cookie value.
+- **Must** be used between [*CgiBeginHttpHeader*](#4-begin-http-header) and [*CgiEndHttpHeader*](#5-end-http-header).
+
+**Arguments**
+
+| #| Type | Description | I / O |
+| - |:----:| ---- |:-----:|
+| **1** | char \* | cookie name| I |
+| **2** | char \* | cookie value | O |
+
+**Return**
+
+| Returned code | Information |
+| ------------- | ----------- |
+| cgiOk         | Success!    |
+| cgiGetCookieNullName | Cookie name is *NULL*. |
+| cgiGetCookieNameEmpty |Cookie name is empty. |
+| cgiGetCookieNullValue | Cookie value is *NULL*. |
+| cgiGetCookieNullCookie | Could not list the cookies. |
+| cgiGetCookieNameNotFound | Cookie name not found. |
+
+---
+
+### 8. Delete Cookie
+
+```C
+cgiError
+CgiDeleteCookie (char *name, char* path);
+```
+
+**Description**
+- Delets a cookie.
+- **Must** be used between [*CgiBeginHttpHeader*](#4-begin-http-header) and [*CgiEndHttpHeader*](#5-end-http-header).
+
+**Arguments**
+
+| #| Type | Description | I / O |
+| - |:----:| ---- |:-----:|
+| **1** | char \* | cookie name| I |
+| **2** | char \* | cookie path<br>(same path the cookie was set) | I |
+
+**Return**
+
+| Returned code | Information |
+| ------------- | ----------- |
+| cgiOk         | Success!    |
+| cgiDeleteCookieNameNull | Cookie name is *NULL*. |
+| cgiDeleteCookieNameEmpty |Cookie name is empty. |
 
 ---

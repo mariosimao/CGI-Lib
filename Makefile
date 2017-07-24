@@ -14,8 +14,10 @@ CFLAGS = -Wall -std=c99 -ansi
 LFLAGS = -Wall -std=c99 -ansi
 
 SIMPLE_FORM_OBJS = simpleForm.o cgiLib.o
+SIMPLE_COOKIE_OBJS = simpleCookie.o cgiLib.o
 
-EXECS = simpleForm
+EXECS = simpleForm\
+		simpleCookie
 
 ALL = $(EXECS)
 
@@ -28,6 +30,9 @@ all: $(ALL)
 
 simpleForm: $(SIMPLE_FORM_OBJS)
 	$(LD) $(LFLAGS) -o $@.cgi $(SIMPLE_FORM_OBJS)
+
+simpleCookie: $(SIMPLE_COOKIE_OBJS)
+	$(LD) $(LFLAGS) -o $@.cgi $(SIMPLE_COOKIE_OBJS)
 
 # Removes all objects and executables
 clean:

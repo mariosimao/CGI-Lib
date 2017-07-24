@@ -7,7 +7,7 @@
 int
 main (void)
 {
-	char name [1024 + 1];
+	char name [CGI_INPUT_VALUE_MAX_LENGTH + 1];
 	int age;
 	double height;
 
@@ -29,8 +29,8 @@ main (void)
 
 	/* You need to use "printf" in your HTML code
 	 * The TABs and line breakers ('\n') inside every
-	 * "printf" are only for maintain the code human
-	 * readable in the browser.*/
+	 * "printf" are optional and only to mantain the
+	 * code human readable in the browser.*/
 	printf ("<html>\n");
 	printf ("	<head>\n");
 	printf ("		<title>\n");
